@@ -1,0 +1,22 @@
+/* Navbar container ko style */
+.navbar-nav {
+  display: flex;
+  /* sab links center me */
+      /* vertically center */
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+flex: 1;
+} 
+
+/* har ek nav link */
+.nav-link {
+  text-align: center;   /* text bhi center aligned */
+  padding: 8px 15px;    /* spacing */
+}
+
+/* Logout button ko bhi same line me center me */
+.navbar-nav .btn {
+  margin-left: 15px;  /* thoda gap */
+  text-align: center;
+}

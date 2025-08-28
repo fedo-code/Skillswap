@@ -1,0 +1,19 @@
+/* Home.css */
+
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color:transparent;
+}
+
+.home-box {
+  padding: 40px 60px;
+  background-color: lightcoral;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 24px;
+  color: #1e293b;
+  text-align: center;
+}

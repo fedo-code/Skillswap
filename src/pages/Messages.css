@@ -1,0 +1,24 @@
+.messages-list {
+  list-style: none;
+  padding: 0 0 0 16px;  /* 👈 left padding diya */
+  margin: 0;            /* 👈 auto hata diya */
+  max-width: 350px;
+  width: 100%;
+}
+.message-box {
+  border: 1px solid gray;
+  padding: 20px 16px;         /* 👈 padding bada kiya */
+  width: 100%;
+  border-radius: 12px;
+  background: #f4f4f4;
+  margin-bottom: 18px;
+  min-height: 80px;           /* 👈 height bada kiya */
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.message-box:hover {
+  background: #e4ffe0a7;        /* 👈 hover effect */
+  box-shadow: 0 2px 12px rgba(80, 0, 120, 0.10);
+}

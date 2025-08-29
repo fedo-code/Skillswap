@@ -13,7 +13,7 @@ const EditProfile = () => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `http://localhost:5000/api/users/profile/${user._id}`,
+          `/api/users/profile/${user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -37,10 +37,10 @@ const EditProfile = () => {
       const token = localStorage.getItem("token");
 
       await axios.patch(
-        `http://localhost:5000/api/users/skills/${user._id}`,
+        `/api/users/skills/${user._id}`,
         {
           skillsOffered: skillsOffered.split(",").map((s) => s.trim()),
-          skillsWanted: skillsWanted.split(",").map((s) => s.trim()),       
+          skillsWanted: skillsWanted.split(",").map((s) => s.trim()),        
         },
         {
           headers: {

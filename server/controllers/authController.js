@@ -8,11 +8,11 @@ const register = async (req, res) => {
     const exist = await User.findOne({ email });
     if (exist) return res.status(400).json({ message: 'Email already registered' });
 
-    const hash = await bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, 10); 
     const user = new User({ name, email, password: hash });
     await user.save();
 
-    res.status(201).json({ message: 'Registered successfully' });
+    res.status(201).json({ message: 'Registered successfully' }); 
   } catch (err) {
     res.status(500).json({ message: 'Registration failed', error: err.message });
   }

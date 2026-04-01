@@ -6,12 +6,12 @@ exports.sendMessage = async (req, res) => {
   try {
     const { recipientId, content } = req.body;
 
-    console.log("📨 Sending message to:", recipientId); // ✅ ADD THIS
+    console.log("📨 Sending message to:", recipientId); // ✅ ADD THIS  
     console.log("✉️  Content:", content);               // ✅ ADD THIS
     console.log("👤 From user:", req.user._id); 
     const newMsg = new Message({
       sender: req.user._id,
-      recipient: recipientId,
+      recipient: recipientId, 
       content,
       read: false, // 🟢 initially unread
     });

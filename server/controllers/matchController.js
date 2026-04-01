@@ -7,7 +7,7 @@ exports.findMatches = async (req, res) => {
       _id: { $ne: currentUser._id },
       skillsOffered: { $in: currentUser.skillsWanted },
       skillsWanted: { $in: currentUser.skillsOffered },
-    }).select('-password');
+    }).select('-password');   
 
     res.json(matches);
   } catch (err) {

@@ -22,7 +22,7 @@ const Register = () => {
       alert('Registered! Now login.');
       navigate('/login');
     } catch (err) {
-      alert(err.response?.data?.message || 'Registration failed');
+      alert(err.response?.data?.message || 'Registration failed');  
     }
   };
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 const resourceSchema = new mongoose.Schema(
   {
@@ -17,6 +18,8 @@ const swapSchema = new mongoose.Schema(
     partnerTeaches: { type: String, required: true, trim: true }, // skill the partner teaches
     scheduledAt: { type: Date, required: true },
     durationMin: { type: Number, default: 60, min: 15, max: 480 },
+    // private, unguessable video room name for the built-in session
+    roomId: { type: String, default: () => crypto.randomBytes(12).toString('hex') },
     meetingLink: { type: String, trim: true, default: '' },
     note: { type: String, trim: true, default: '', maxlength: 500 },
     status: {

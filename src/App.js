@@ -14,6 +14,7 @@ import ChatBox from './pages/ChatBox';
 import Swaps from './pages/Swaps';
 import SwapDetail from './pages/SwapDetail';
 import ProposeSwap from './pages/ProposeSwap';
+import SwapRoom from './pages/SwapRoom';
 import { ProtectedRoute } from './components/ui';
 import './styles/theme.css';
 
@@ -35,6 +36,7 @@ const App = () => (
         <Route path="/messages/chat/:id" element={guard(<ChatBox />)} />
         <Route path="/swaps" element={guard(<Swaps />)} />
         <Route path="/swaps/new/:partnerId" element={guard(<ProposeSwap />)} />
+        <Route path="/swaps/:id/room" element={guard(<SwapRoom />)} />
         <Route path="/swaps/:id" element={guard(<SwapDetail />)} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

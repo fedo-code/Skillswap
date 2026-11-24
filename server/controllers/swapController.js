@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const Swap = require('../models/Swap');
 
 const populateSwap = (q) =>
@@ -54,7 +55,7 @@ exports.createSwap = async (req, res) => {
 exports.getMySwaps = async (req, res) => {
   try {
     const swaps = await populateSwap(
-      Swap.find({ $or: [{ proposer: req.user._id }, { partner: req.user._id }] }).sort({ scheduledAt: 1 })
+      Swap.find({ $or: [{ proposer: req.user._id }, { partner: req.user._id }] }).select('-roomId').sort({ scheduledAt: 1 })
     );
     res.json(swaps);
   } catch (err) {
@@ -66,6 +67,11 @@ exports.getSwap = async (req, res) => {
   try {
     const swap = await populateSwap(Swap.findById(req.params.id));
     if (!swap || !isParticipant(swap, req.user._id)) return res.status(404).json({ message: 'Swap not found' });
+    // swaps created before rooms existed get one lazily
+    if (!swap.roomId) {
+      swap.roomId = crypto.randomBytes(12).toString('hex');
+      await swap.save();
+    }
     res.json(swap);
   } catch (err) {
     res.status(404).json({ message: 'Swap not found' });

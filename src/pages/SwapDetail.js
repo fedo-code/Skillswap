@@ -82,8 +82,8 @@ const SwapDetail = () => {
           <div><div className="label-sm">When</div><b>{whenLabel(swap.scheduledAt)}</b> · {swap.durationMin} min</div>
           {swap.meetingLink && (
             <div>
-              <div className="label-sm">Meeting link</div>
-              <a href={swap.meetingLink} target="_blank" rel="noreferrer" className="back-link">Join the session ↗</a>
+              <div className="label-sm">External meeting link</div>
+              <a href={swap.meetingLink} target="_blank" rel="noreferrer" className="back-link">Open Google Meet / Zoom link ↗</a>
             </div>
           )}
           {swap.note && <div><div className="label-sm">Note from {swap.proposer.name.split(' ')[0]}</div>{swap.note}</div>}
@@ -97,7 +97,10 @@ const SwapDetail = () => {
             </>
           )}
           {swap.status === 'accepted' && (
-            <button className="btn-app btn-primary-app" disabled={busy} onClick={() => setStatus('completed')}>Mark as completed</button>
+            <Link to={`/swaps/${id}/room`} className="btn-app btn-primary-app">Join video session</Link>
+          )}
+          {swap.status === 'accepted' && (
+            <button className="btn-app btn-ghost" disabled={busy} onClick={() => setStatus('completed')}>Mark as completed</button>
           )}
           {['pending', 'accepted'].includes(swap.status) && (
             <button className="btn-app btn-ghost" disabled={busy} onClick={() => setStatus('cancelled')}>Cancel swap</button>

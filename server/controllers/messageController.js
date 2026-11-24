@@ -115,3 +115,13 @@ exports.getAllUserMessages = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch conversations' });
   }
 };
+
+// ✅ Number of unread messages for the navbar badge
+exports.getUnreadCount = async (req, res) => {
+  try {
+    const count = await Message.countDocuments({ recipient: req.user._id, read: false });
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch unread count' });
+  }
+};

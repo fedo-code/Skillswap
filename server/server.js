@@ -1,4 +1,7 @@
 
+
+
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -15,6 +18,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/match', require('./routes/matchRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
+app.use('/api/swaps', require('./routes/swapRoutes'));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.SERVER_PORT || process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🔥 Server running on port ${PORT}`));

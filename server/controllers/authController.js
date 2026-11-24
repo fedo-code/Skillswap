@@ -8,11 +8,11 @@ const register = async (req, res) => {
     const exist = await User.findOne({ email });
     if (exist) return res.status(400).json({ message: 'Email already registered' });
 
-    const hash = await bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, 10); 
     const user = new User({ name, email, password: hash });
     await user.save();
 
-    res.status(201).json({ message: 'Registered successfully' });
+    res.status(201).json({ message: 'Registered successfully' }); 
   } catch (err) {
     res.status(500).json({ message: 'Registration failed', error: err.message });
   }
@@ -28,7 +28,8 @@ const login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.json({ token, user });
+    const { password: _pw, ...safeUser } = user.toObject();
+    res.json({ token, user: safeUser });
   } catch (err) {
     res.status(500).json({ message: 'Login failed', error: err.message });
   }

@@ -6,12 +6,12 @@ exports.sendMessage = async (req, res) => {
   try {
     const { recipientId, content } = req.body;
 
-    console.log("📨 Sending message to:", recipientId); // ✅ ADD THIS
+    console.log("📨 Sending message to:", recipientId); // ✅ ADD THIS  
     console.log("✉️  Content:", content);               // ✅ ADD THIS
     console.log("👤 From user:", req.user._id); 
     const newMsg = new Message({
       sender: req.user._id,
-      recipient: recipientId,
+      recipient: recipientId, 
       content,
       read: false, // 🟢 initially unread
     });
@@ -113,5 +113,15 @@ exports.getAllUserMessages = async (req, res) => {
     res.status(200).json(conversations);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch conversations' });
+  }
+};
+
+// ✅ Number of unread messages for the navbar badge
+exports.getUnreadCount = async (req, res) => {
+  try {
+    const count = await Message.countDocuments({ recipient: req.user._id, read: false });
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch unread count' });
   }
 };

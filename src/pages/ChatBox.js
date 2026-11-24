@@ -1,114 +1,85 @@
-
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import axios from '../utils/axiosInstance';
 import { useAuth } from '../context/AuthContext';
+import { Avatar, timeLabel } from '../components/ui';
 
-const ChatBox = () => { 
-  const { id } = useParams(); // recipientId
+const ChatBox = () => {
+  const { id } = useParams(); // recipient id
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState('');
   const [recipientName, setRecipientName] = useState('');
+  const logRef = useRef(null);
 
-  // ✅ Fetch recipient info (always correct)
   useEffect(() => {
-    const fetchRecipient = async () => {
-      try {
-        const res = await axios.get(`/users/${id}`); // API to get recipient info
-        setRecipientName(res.data.name);
-      } catch (err) {
-        console.error('Error fetching recipient name:', err);
-      }
-    };
-    fetchRecipient();
+    axios
+      .get(`/users/profile/${id}`)
+      .then((res) => setRecipientName(res.data.name))
+      .catch(() => setRecipientName(''));
   }, [id]);
 
-  // ✅ Fetch messages
   const fetchMessages = useCallback(async () => {
     try {
       const res = await axios.get(`/messages/${id}`);
       setMessages(res.data);
-      window.dispatchEvent(new Event("refreshConversationsFully"));
+      window.dispatchEvent(new Event('refreshConversationsFully'));
     } catch (err) {
-      console.error("Error fetching messages:", err);
+      console.error('Error fetching messages:', err);
     }
   }, [id]);
 
-  useEffect(() => { 
+  useEffect(() => {
     fetchMessages();
-    setTimeout(() => window.dispatchEvent(new Event('refreshConversationsFully')), 500);
   }, [fetchMessages]);
 
-  // ✅ Send message
-  const handleSend = async () => {
-    if (!newMsg.trim()) return;
+  // keep the newest message in view
+  useEffect(() => {
+    if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
+  }, [messages]);
 
+  const handleSend = async (e) => {
+    e.preventDefault();
+    if (!newMsg.trim()) return;
     try {
-      await axios.post('/messages', { recipientId: id, content: newMsg });
+      await axios.post('/messages', { recipientId: id, content: newMsg.trim() });
       setNewMsg('');
       fetchMessages();
-    } catch (err) { 
-      console.error('Error sending message:', err); 
+    } catch (err) {
+      console.error('Error sending message:', err);
     }
   };
 
   return (
-    <div style={{ padding: '20px', minHeight: '100vh' }}>
-      {/* ✅ Chat header always shows recipient name */}
-      <h2>Chat with {recipientName || 'User'}</h2>
+    <div className="page" style={{ maxWidth: 720 }}>
+      <div className="card-app chat">
+        <div className="chat-head">
+          <Link to="/messages" aria-label="Back to messages">←</Link>
+          <Avatar name={recipientName || 'U'} size="avatar-sm" />
+          <h2>{recipientName || 'Chat'}</h2>
+          <Link to={`/matched-profile/${id}`} className="ms-auto">View profile</Link>
+        </div>
 
-      <div style={{
-        maxHeight: '300px',
-        overflowY: 'auto',
-        marginBottom: '10px',
-        border: '1px solid #ccc',
-        padding: '10px',
-        borderRadius: '8px',
-        background: '#f9f9f9'
-      }}>
-        {messages.map((msg) => (
-          <p key={msg._id}> 
-            <strong>
-              {msg.sender === user._id ? 'Me' : msg.senderName || 'User'}:
-            </strong> {msg.content} 
-            <br />
-            <small style={{ color: "#888" }}>
-              {msg.createdAt
-                ? new Date(msg.createdAt).toLocaleString([], {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                : ""}
-            </small>
-          </p>
-        ))}
+        <div className="chat-log" ref={logRef}>
+          {messages.length === 0 && <p className="muted text-center my-auto">No messages yet. Say hello! 👋</p>}
+          {messages.map((msg) => (
+            <div key={msg._id} className={`bubble ${msg.sender === user._id ? 'me' : 'them'}`}>
+              {msg.content}
+              <small>{timeLabel(msg.createdAt)}</small>
+            </div>
+          ))}
+        </div>
+
+        <form className="chat-form" onSubmit={handleSend}>
+          <input
+            className="input-app"
+            value={newMsg}
+            onChange={(e) => setNewMsg(e.target.value)}
+            placeholder="Type your message…"
+          />
+          <button className="btn-app btn-primary-app" disabled={!newMsg.trim()}>Send</button>
+        </form>
       </div>
-
-      <textarea
-        value={newMsg}
-        onChange={(e) => setNewMsg(e.target.value)}
-        placeholder="Type your message..."
-        style={{ width: '100%', height: '60px', marginBottom: '10px' }}
-      />
-      <br />
-      <button 
-        onClick={handleSend} 
-        style={{
-          backgroundColor: 'blue',
-          color: 'white',
-          padding: '8px 16px',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        Send
-      </button>
     </div>
   );
 };

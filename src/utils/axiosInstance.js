@@ -14,8 +14,11 @@
 // utils/axiosInstance.js
 import axios from 'axios';
 
+// Local dev: '/api' is forwarded to localhost:5000 by the CRA proxy.
+// Production on a separate host (e.g. Vercel): set REACT_APP_API_URL to the backend,
+// e.g. https://skillswap-co6l.onrender.com/api
 const instance = axios.create({
-  baseURL: '/api', // ✅ Relative URL - automatic work karega
+  baseURL: (process.env.REACT_APP_API_URL || '/api').replace(/\/+$/, ''),
 });
 
 instance.interceptors.request.use((config) => {
@@ -27,5 +30,3 @@ instance.interceptors.request.use((config) => {
 });
 
 export default instance;
-
- 

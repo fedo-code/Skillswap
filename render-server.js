@@ -20,14 +20,15 @@ app.use('/api/auth', require('./server/routes/authRoutes'));
 app.use('/api/users', require('./server/routes/userRoutes'));
 app.use('/api/match', require('./server/routes/matchRoutes'));
 app.use('/api/messages', require('./server/routes/messageRoutes'));
+app.use('/api/swaps', require('./server/routes/swapRoutes'));
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'Server is working!' });
+});
 
 // ✅ SPA Support
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server is working!' });
 });
 
 const PORT = process.env.PORT || 5000;

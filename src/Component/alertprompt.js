@@ -1,4 +1,4 @@
-function mix(){
+ function mix(){
 
     const name="Polash";
 

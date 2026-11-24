@@ -9,12 +9,15 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 
 import { AuthProvider } from "./context/AuthContext";
+import { UnreadProvider } from "./context/UnreadContext";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   
 <BrowserRouter>
     <AuthProvider>
-      <App />
+      <UnreadProvider>
+        <App />
+      </UnreadProvider>
     </AuthProvider>
   </BrowserRouter>
 

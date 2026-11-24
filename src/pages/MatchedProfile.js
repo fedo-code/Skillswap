@@ -1,88 +1,57 @@
-
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import axios from '../utils/axiosInstance';
+import { Avatar, Chips } from '../components/ui';
 
 const MatchedProfile = () => {
   const { id } = useParams();
-  const [matchedUser, setMatchedUser] = useState(null);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [person, setPerson] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchMatchedUser = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`/api/users/profile/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setMatchedUser(res.data); 
-      } catch (err) {
-        console.error('Error loading matched user profile:', err);
-        setError("Matched user not found or unauthorized");
-      }
-    };
-
-    fetchMatchedUser();
+    setPerson(null);
+    axios
+      .get(`/users/profile/${id}`)
+      .then((res) => setPerson(res.data))
+      .catch(() => setError('This profile was not found.'));
   }, [id]);
 
-  const handleMessageClick = () => {
-    navigate(`/messages/chat/${id}`); 
-  };
+  if (error) return <div className="page"><div className="alert-app alert-error">{error}</div></div>;
+  if (!person) return <div className="page muted">Loading…</div>;
 
   return (
-    <div
-      style={{
-        
-        minHeight: '100vh',
-        paddingTop: '40px',
-        paddingBottom: '40px',
-      }}
-    >
-      <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>Matched User Profile</h2>
-      {error ? (
-        <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
-      ) : matchedUser ? (
-        <div
-          style={{
-            maxWidth: '500px',
-            margin: '0 auto',
-            backgroundColor: 'purple',
-            padding: '30px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            textAlign: 'center',
-          }}
-        >
-          <h3>{matchedUser.name}</h3>
-          <p><strong>Email:</strong> {matchedUser.email}</p>
-          <p><strong>Skills Offered:</strong> {matchedUser.skillsOffered.join(', ')}</p>
-          <p><strong>Skills Wanted:</strong> {matchedUser.skillsWanted.join(', ')}</p>
-
-          <button
-            onClick={handleMessageClick}
-            style={{
-              marginTop: '20px',
-              padding: '10px 20px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            Message {matchedUser.name}
-          </button>
+    <div className="page" style={{ maxWidth: 720 }}>
+      <Link to="/dashboard" className="back-link">← Back to matches</Link>
+      <div className="card-app mt-3">
+        <div className="profile-head">
+          <Avatar name={person.name} size="avatar-xl" />
+          <div>
+            <h1>{person.name}</h1>
+            <div className="muted">{person.email}</div>
+          </div>
+          <div className="actions">
+            <button className="btn-app btn-primary-app" onClick={() => navigate(`/swaps/new/${id}`)}>
+              Propose a swap
+            </button>
+            <button className="btn-app btn-ghost" onClick={() => navigate(`/messages/chat/${id}`)}>
+              Message
+            </button>
+          </div>
         </div>
-      ) : (
-        <p style={{ textAlign: 'center' }}>Loading...</p>
-      )}
+        <div className="skill-grid">
+          <div className="skill-block">
+            <h3>Can teach</h3>
+            <Chips items={person.skillsOffered} teal />
+          </div>
+          <div className="skill-block">
+            <h3>Wants to learn</h3>
+            <Chips items={person.skillsWanted} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default MatchedProfile;
-
-

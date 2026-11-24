@@ -16,5 +16,6 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/match', require('./routes/matchRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
 
-const PORT = process.env.PORT || 5000;
+// PORT belongs to the React dev server (3000); the API must stay on 5000 to match the proxy.
+const PORT = process.env.SERVER_PORT || 5000;
 app.listen(PORT, () => console.log(`🔥 Server running on port ${PORT}`));
